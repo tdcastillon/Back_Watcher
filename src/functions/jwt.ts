@@ -6,13 +6,14 @@ import { ObjectId } from 'mongoose';
 const createToken = (id: ObjectId) => {
     // timeLeft = 2h
     let timeLeft: number = 60 * 60 * 2;
-    return jwt.sign({ id }, secret_key.getSecretKey(), {
+    return jwt.sign({ _id: id }, secret_key.getSecretKey(), {
         expiresIn: timeLeft
     });
 };
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.header('auth-token');
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log(token)
     if (!token) {
         return res.status(401).send({ message: 'Access denied' });
     }

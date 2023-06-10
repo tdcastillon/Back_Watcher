@@ -19,7 +19,7 @@ interface MovieNotes {
     * @returns {string} message if error
 */
 
-app.get('/', async (res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
     MovieNotes.find()
     .then((movieNotes) => {
         if (movieNotes) {
@@ -46,7 +46,7 @@ app.get('/', async (res: Response) => {
     * @return status 403 if token is invalid
     * @return status 400 if movie_id or note is missing
 */
-
+    
 app.post('/add', jwt.verifyToken, async (req: Request, res: Response) => {
     const { movie_id, note, _id } = req.body;
     if (!movie_id || !note) {
@@ -144,6 +144,7 @@ app.get('/:movie_id', jwt.verifyToken, async (req: Request, res: Response) => {
         if (movieNote) {
             res.status(200).send({ note: movieNote.note });
         } else {
+            console.log("Not found")
             res.status(404).send({ message: 'Movie note not found' });
         }
     })
@@ -195,3 +196,4 @@ app.post('/delete/:movie_id', jwt.verifyToken, async (req: Request, res: Respons
     })
 })
 
+export default app

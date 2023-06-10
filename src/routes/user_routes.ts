@@ -3,6 +3,7 @@ import User from '../models/User';
 import { SHA256 } from 'crypto-js';
 import jwt from '../functions/jwt';
 import { ObjectId } from 'mongoose';
+import MovieNotes from '../models/MovieNotes';
 
 const app = express.Router();
 
@@ -23,7 +24,7 @@ interface User {
     * @returns {string} message if error
 */
 
-app.get('/', async (res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
     try {
         const user: any = await User.find();
         try {
@@ -152,7 +153,6 @@ app.post('/login', async (req: Request, res: Response) => {
         let pass = SHA256(password).toString();
         console.log(email, pass)
         User.findOne({ email: email }).then((user: any) => {
-            console.log(user)
             let token = jwt.createToken(user._id);
             res.status(200).send({ token: token})
         }).catch((err: any) => {
@@ -161,6 +161,42 @@ app.post('/login', async (req: Request, res: Response) => {
         })
     } catch (err: any) {
         console.log(err)
+        res.status(500).send({ message: err.message });
+    }
+});
+
+
+/*
+    * @function GET
+    * @function_url '/getMoviesNotes'
+    * @description Get all movies notes for a user
+    * @returns {list} movies notes if success
+    * @returns {string} message if error
+    * @authorization token
+    * error 403 if token is invalid
+    * error 404 if user not found
+    * error 500 if any error occurs
+    * success 200 if success
+*/
+
+app.get('/getMoviesNotes', jwt.verifyToken, async (req: Request, res: Response) => {
+    console.log("getMoviesNotes")
+    try {
+        const {_id} = req.body;
+        MovieNotes.find({ user_id: _id }).then((moviesNotes) => {
+            if (moviesNotes) {
+                let response : Array<{movie_id: number, note: number}> = []
+                moviesNotes.forEach((movieNote) => {
+                    response.push({ movie_id: movieNote.movie_id, note: movieNote.note });
+                });
+                res.status(200).send(response);  
+            } else {
+                res.status(404).send({ message: 'Movies notes not found' });
+            }
+        }).catch((err: any) => {
+            res.status(500).send({ message: err.message });
+        });
+    } catch (err: any) {
         res.status(500).send({ message: err.message });
     }
 });

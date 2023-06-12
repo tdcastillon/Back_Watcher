@@ -4,8 +4,8 @@ import secret_key from './secret_key';
 import { ObjectId } from 'mongoose';
 
 const createToken = (id: ObjectId) => {
-    // timeLeft = 2h
-    let timeLeft: number = 60 * 60 * 2;
+    // timeLeft = 10h
+    let timeLeft: number = 60 * 60 * 10;
     return jwt.sign({ _id: id }, secret_key.getSecretKey(), {
         expiresIn: timeLeft
     });
@@ -22,7 +22,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         req.body._id = decodedToken._id; 
         next();
     } catch (err) {
-        res.status(400).send({ message: 'Invalid token' });
+        res.status(403).send({ message: 'Invalid token' });
     }
 }
 

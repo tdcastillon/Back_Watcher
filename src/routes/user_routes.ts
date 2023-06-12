@@ -283,11 +283,11 @@ app.get('/getTvShowsNotes', jwt.verifyToken, async (req: Request, res: Response)
     * @need token
 */
 
-app.get('/getTvShowNote/:tvshow_id', jwt.verifyToken, async (req: Request, res: Response) => {
+app.get('/getTvShowNote/:serie_id', jwt.verifyToken, async (req: Request, res: Response) => {
     try {
-        const { tvshow_id } = req.params;
+        const { serie_id } = req.params;
         const { _id } = req.body;
-        TvShowNotes.findOne({ tvshow_id, user_id: _id }).then((tvshowNote) => {
+        TvShowNotes.findOne({ serie_id, user_id: _id }).then((tvshowNote) => {
             if (tvshowNote) {
                 res.status(200).send({ notes: tvshowNote.notes });
             } else {

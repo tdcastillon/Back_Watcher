@@ -13,9 +13,8 @@ const createToken = (id: ObjectId) => {
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
-    console.log(token)
     if (!token) {
-        return res.status(401).send({ message: 'Access denied' });
+        return res.status(403).send({ message: 'Access denied' });
     }
     try {
         const decodedToken: { _id: ObjectId } = jwt.verify(token, secret_key.getSecretKey()) as { _id: ObjectId };

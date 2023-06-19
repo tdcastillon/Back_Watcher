@@ -61,7 +61,7 @@ app.get('/', jwt.verifyToken, async (req: Request, res: Response) => {
     * @return status 500 if any error occurs
 */
 
-app.post('/add/:tvshow_id', jwt.verifyToken, async (req: Request, res: Response) => {
+app.post('/add/:serie_id', jwt.verifyToken, async (req: Request, res: Response) => {
     const notes : {season: number, note: number}[] = req.body.notes;
     const { _id } = req.body;
     const { serie_id } = req.params;
@@ -109,7 +109,7 @@ app.post('/add/:tvshow_id', jwt.verifyToken, async (req: Request, res: Response)
     * @return status 404 if tvshow note not found
 */
 
-app.post('/update/:tvshow_id', jwt.verifyToken, async (req: Request, res: Response) => {
+app.post('/update/:serie_id', jwt.verifyToken, async (req: Request, res: Response) => {
     const notes : {season: number, note: number}[] = req.body.notes;
     const { _id } = req.body;
     const { serie_id } = req.params;
